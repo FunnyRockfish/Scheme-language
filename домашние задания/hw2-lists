@@ -1,0 +1,36 @@
+(define (my-range a b n)
+  (if (> a b) '() (cons a (my-range (+ a n) b n))))
+
+(define atom?
+  (lambda (x)
+    (and (not (pair? x)) (not (null? x)))))
+
+(define (my-element? x xs)
+  (if (null? xs)
+      (= 1 2)
+      (if (equal? x (car xs))
+          (= 2 2)
+          (my-element? x (cdr xs)))))
+ 
+(define (my-flatten lst)
+  (cond ((null? lst) '())
+        ((atom? (car lst)) (cons (car lst) (my-flatten (cdr lst))))
+        (#t (append (my-flatten (car lst)) (my-flatten (cdr lst))))))
+
+(define (my-filter pred? xs)
+  (cond ((null? xs) '())
+        ((pred? (car xs))
+         (cons (car xs)
+               (my-filter pred? (cdr xs))))
+        (else (my-filter pred? (cdr xs)))))
+
+(define (my-fold-left op xs)
+  (define a (car xs))
+  (if (not (null? (cdr xs)))
+      (my-fold-left op (cons (op (car xs) (cadr xs)) (cdr (cdr xs))))
+      a))
+(define (my-fold-right op xs)
+  (define a (car xs))
+  (if (not (null? (cdr xs)))
+      (op (car xs) (my-fold-right op (cdr xs)))
+      a))
