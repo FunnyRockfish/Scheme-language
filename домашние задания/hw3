@@ -1,0 +1,16 @@
+(define atom?
+  (lambda (x)
+    (and (not (pair? x)) (not (null? x)))))
+
+(define (derivate func . x)
+  (cond ((equal? func x) 1)
+        ((atom? func) 0)
+        ((equal? '+ (car func)) `(+ ,(derivate (cadr func) x) ,(derivate (caddr func) x)))
+        ((equal? '- (car func)) `(- ,(derivate (cadr func) x) ,(derivate (caddr func) x))) 
+        ((equal? '* (car func)) `(+ (* ,(caddr func) ,(derivate (cadr func) x))
+                                (* ,(cadr func) ,(derivate (caddr func) x))))
+        ((equal? 'sin (car func)) `(* (cos ,(cadr func)) ,(derivate (cadr func) x)))
+        ((equal? 'cos (car func)) `(* (- (sin ,(cadr func))) ,(derivate (cadr func) x)))
+        ((and (equal? 'expt (car func)) (number? (caddr func)))
+                              `(* (* ,(caddr func) (expt ,(cadr func) ,(- (caddr func) 1)))
+                                  ,(derivate (cadr func) x))))) 
